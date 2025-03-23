@@ -22,7 +22,7 @@ class UserService
         return $this->userRepository->update($data, $id);
     }
 
-    public function delete(int $id): bool
+    public function delete(int $id)
     {
         $this->userRepository->delete($id);
     }
