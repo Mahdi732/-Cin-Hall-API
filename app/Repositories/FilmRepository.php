@@ -3,8 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Film;
-use App\Repositories\contract\FilmRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\contract\FilmRepositoryInterface;
 class FilmRepository implements FilmRepositoryInterface
 {
 
