@@ -9,7 +9,7 @@ class Session extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['film_id', 'room_id','start_date', 'end_date', 'language', 'type'];
+    protected $fillable = ['film_id', 'room_id','start_date', 'end_date', 'type'];
 
     public function film(){
         return $this->belongsTo(Film::class);

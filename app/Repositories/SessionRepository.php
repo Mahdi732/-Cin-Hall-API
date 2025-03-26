@@ -26,7 +26,7 @@ class SessionRepository implements SessionRepositoryInterface
         return $session->delete();
     }
 
-    public function shearchType(string $type)
+    public function searchType(string $type)
     {
         return Session::with('film')->where('type', $type)->get();
     }
