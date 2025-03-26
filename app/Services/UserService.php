@@ -7,28 +7,30 @@ use App\Repositories\contract\UserRepositoryInterface;
 
 class UserService
 {
-    protected $userRepository;
-    public function __construct(UserRepositoryInterface $userRepository ){
+    protected UserRepositoryInterface $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
         $this->userRepository = $userRepository;
     }
 
-    public function create(array $data): User
+    public function getAllUsers()
+    {
+        return $this->userRepository->all();
+    }
+
+    public function createUser(array $data): ?User
     {
         return $this->userRepository->create($data);
     }
 
-    public function update(array $data, int $id)
+    public function updateUser(array $data, int $id): int
     {
         return $this->userRepository->update($data, $id);
     }
 
-    public function delete(int $id)
+    public function deleteUser(int $id): bool
     {
-        $this->userRepository->delete($id);
-    }
-
-    public function all(): \Illuminate\Database\Eloquent\Collection
-    {
-        return $this->userRepository->all();
+        return $this->userRepository->delete($id);
     }
 }
