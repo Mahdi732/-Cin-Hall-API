@@ -11,20 +11,23 @@ use Illuminate\Support\Facades\Auth;
 
 class FilmController extends Controller
 {
-    protected $filmRepository;
+    protected FilmRepositoryInterface $filmRepository;
+
     public function __construct(FilmRepositoryInterface $filmRepository) {
         $this->filmRepository = $filmRepository;
     }
 
-    public function index(){
-        return $this->filmRepository->getall();
+    public function index()
+    {
+        return response()->json($this->filmRepository->getAll(), 200);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $fields = $request->validate([
             'title' => 'required|string',
             'description' => 'required|string',
-            'image' => 'required|string|string',
+            'image' => 'required|string',
             'duration' => 'required',
             'minimum_age' => 'required|integer',
             'trailer_url' => 'required|string',
@@ -32,10 +35,7 @@ class FilmController extends Controller
         ]);
 
         $user = Auth::user();
-
-        if (!$user || !$user->is_admin) {
-            return response()->json(["message" => "You can't create a film!"], 401);
-        }
+        abort_unless($user && $user->is_admin, 403, "You can't create a film!");
 
         $film = $this->filmRepository->store($fields);
 
@@ -45,26 +45,36 @@ class FilmController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, int $id) {
-        if(Film::where('user_id', Auth::id())->where('id', $id)->exists()) {
-            $this->filmRepository->update($request->all(), $id);
+    public function update(Request $request, int $id)
+    {
+        $film = Film::findOrFail($id);
 
-            return response()->json([
-                "message" => "Film updated!",
-            ], 200);
-        }
-        return response()->json([
-            "message" => "Film not found!",
+        $this->authorize('update', $film);
+
+        $fields = $request->validate([
+            'title' => 'sometimes|string',
+            'description' => 'sometimes|string',
+            'image' => 'sometimes|string',
+            'duration' => 'sometimes',
+            'minimum_age' => 'sometimes|integer',
+            'trailer_url' => 'sometimes|string',
+            'genre' => 'sometimes|string'
         ]);
+
+        $this->filmRepository->update($fields, $id);
+
+        return response()->json(["message" => "Film updated!"], 200);
     }
 
-    public function destroy(int $id) {
-        $film = Film::find($id);
-        if($film->user_id == Auth::id()) {
-            $this->filmRepository->destroy($id);
-            return response()->json([
-                'message' => 'Film deleted!'
-            ]);
-        }
+    public function destroy(int $id)
+    {
+        $film = Film::findOrFail($id);
+
+        $this->authorize('delete', $film);
+
+        $this->filmRepository->destroy($id);
+
+        return response()->json(['message' => 'Film deleted!'], 200);
     }
+
 }
