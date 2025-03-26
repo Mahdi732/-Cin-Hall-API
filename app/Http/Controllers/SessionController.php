@@ -12,16 +12,20 @@ class SessionController extends Controller
 {
     protected $sessionRepository;
     protected $filmRepository;
-    public function __construct(SessionRepositoryInterface $sessionRepository, FilmRepositoryInterface $filmRepository){
+
+    public function __construct(SessionRepositoryInterface $sessionRepository, FilmRepositoryInterface $filmRepository)
+    {
         $this->sessionRepository = $sessionRepository;
         $this->filmRepository = $filmRepository;
     }
 
-    public function index(){
-        return $this->sessionRepository->getall();
+    public function index()
+    {
+        return response()->json($this->sessionRepository->getAll(), 200);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $fields = $request->validate([
             'start_date' => 'required|date_format:Y-m-d H:i:s',
             'end_date' => 'required|date_format:Y-m-d H:i:s|after:start_date',
@@ -36,45 +40,45 @@ class SessionController extends Controller
         ]);
 
         $user = Auth::user();
-        if(!$user || !$user->is_admin){
+        if (!$user || !$user->is_admin) {
             return response()->json([
-                'message' => "you can't create sessions",
+                'message' => "You can't create sessions",
             ], 401);
         }
 
         $fields['user_id'] = Auth::id();
 
-        if(isset($fields['film'])){
-        $fields['film']['user_id'] = Auth::id();
-
-        $film = $this->filmRepository->store($fields['film']);
-
-        $fields['film_id'] = $film->id;
+        if (isset($fields['film'])) {
+            $fields['film']['user_id'] = Auth::id();
+            $film = $this->filmRepository->store($fields['film']);
+            $fields['film_id'] = $film->id;
         }
 
         $this->sessionRepository->store($fields);
 
         return response()->json([
-            'message' => 'session created successfully!',
+            'message' => 'Session created successfully!',
             'session' => $fields
-        ]);
+        ], 201);
     }
-    public function shearchType(Request $request)
+
+    public function searchType(Request $request)
     {
         $request->validate([
             'type' => 'required|string',
         ]);
 
-        if(count($this->sessionRepository->shearchType($request->type)) > 0) {
-            $session = $this->sessionRepository->shearchType($request->type);
+        $sessions = $this->sessionRepository->searchType($request->type);
+
+        if (count($sessions) > 0) {
             return response()->json([
-                'message' => 'sessions found',
-                'session' => $session
+                'message' => 'Sessions found',
+                'sessions' => $sessions
             ]);
-        }else{
+        } else {
             return response()->json([
-                'message' => 'session not found with this type',
-            ]);
+                'message' => 'No sessions found with this type',
+            ], 404);
         }
     }
 }
