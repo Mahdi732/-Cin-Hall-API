@@ -13,15 +13,17 @@ return new class extends Migration
     {
         Schema::create('films', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('description');
-            $table->string('image')->nullable();
-            $table->float('duration');
+            $table->string('title');                          
+            $table->text('description');                    
+            $table->string('image')->nullable();              
+            $table->float('duration');                        
             $table->integer('minimum_age');
-            $table->integer('trailerUrl');
             $table->string('genre');
             $table->timestamps();
+            $table->foreignId('user_id')->constrained();    
+            $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
         });
+        
     }
 
     /**

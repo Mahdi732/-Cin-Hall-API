@@ -25,13 +25,10 @@ class SessionController extends Controller
         $fields = $request->validate([
             'start_date' => 'required|date_format:Y-m-d H:i:s',
             'end_date' => 'required|date_format:Y-m-d H:i:s|after:start_date',
-            'language' => 'required|string',
             'film.title' => 'string',
-            'film.description' => 'string',
             'film.image' => 'string',
             'film.duration' => 'integer',
             'film.minimum_age' => 'integer',
-            'film.trailer_url' => 'string|url',
             'film.genre' => 'string',
             'film.user_id' => 'nullable|integer',
             'room_id' => 'required|integer',
@@ -62,14 +59,14 @@ class SessionController extends Controller
             'session' => $fields
         ]);
     }
-    public function getByType(Request $request)
+    public function shearchType(Request $request)
     {
         $request->validate([
             'type' => 'required|string',
         ]);
 
-        if(count($this->sessionRepository->getByType($request->type)) > 0) {
-            $session = $this->sessionRepository->getByType($request->type);
+        if(count($this->sessionRepository->shearchType($request->type)) > 0) {
+            $session = $this->sessionRepository->shearchType($request->type);
             return response()->json([
                 'message' => 'sessions found',
                 'session' => $session

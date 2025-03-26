@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->enum('type', ['Normal', 'VIP']);
+            $table->enum('type',['normal', 'vip']);  
+            $table->integer('capacity'); 
+            $table->string('location')->nullable();
             $table->timestamps();
         });
     }
