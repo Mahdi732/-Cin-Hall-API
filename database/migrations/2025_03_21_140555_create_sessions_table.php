@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sessions', function (Blueprint $table) {
-            $table->id();
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('language');
+            $table->id();                                       
+            $table->dateTime('start_date');                        
+            $table->dateTime('end_date');                          
             $table->enum('type', ['Normal', 'VIP'])->default('Normal');
-            $table->foreignId('film_id')->constrained('films');
-            $table->foreignId('room_id')->constrained('rooms');
-            $table->timestamps();
+            $table->foreignId('film_id')->constrained('films')->onDelete('cascade');
+            $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
+            $table->timestamps();                                 
         });
+        
     }
 
     /**

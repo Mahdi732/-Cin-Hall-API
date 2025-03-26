@@ -13,7 +13,8 @@ class FilmController extends Controller
 {
     protected FilmRepositoryInterface $filmRepository;
 
-    public function __construct(FilmRepositoryInterface $filmRepository) {
+    public function __construct(FilmRepositoryInterface $filmRepository)
+    {
         $this->filmRepository = $filmRepository;
     }
 
@@ -28,10 +29,11 @@ class FilmController extends Controller
             'title' => 'required|string',
             'description' => 'required|string',
             'image' => 'required|string',
-            'duration' => 'required',
+            'duration' => 'required|numeric',
             'minimum_age' => 'required|integer',
             'trailer_url' => 'required|string',
-            'genre' => 'required|string'
+            'genre' => 'required|string',
+            'room_id' => 'required|exists:rooms,id',  
         ]);
 
         $user = Auth::user();
@@ -40,7 +42,7 @@ class FilmController extends Controller
         $film = $this->filmRepository->store($fields);
 
         return response()->json([
-            "message" => "Film created!",
+            "message" => "Film created successfully!",
             "film" => $film
         ], 201);
     }
@@ -55,15 +57,18 @@ class FilmController extends Controller
             'title' => 'sometimes|string',
             'description' => 'sometimes|string',
             'image' => 'sometimes|string',
-            'duration' => 'sometimes',
+            'duration' => 'sometimes|numeric',
             'minimum_age' => 'sometimes|integer',
             'trailer_url' => 'sometimes|string',
-            'genre' => 'sometimes|string'
+            'genre' => 'sometimes|string',
+            'room_id' => 'sometimes|exists:rooms,id', 
         ]);
 
         $this->filmRepository->update($fields, $id);
 
-        return response()->json(["message" => "Film updated!"], 200);
+        return response()->json([
+            "message" => "Film updated successfully!"
+        ], 200);
     }
 
     public function destroy(int $id)
@@ -74,7 +79,9 @@ class FilmController extends Controller
 
         $this->filmRepository->destroy($id);
 
-        return response()->json(['message' => 'Film deleted!'], 200);
+        return response()->json([
+            'message' => 'Film deleted successfully!'
+        ], 200);
     }
 
 }

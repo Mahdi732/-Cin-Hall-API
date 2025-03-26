@@ -8,24 +8,26 @@ use App\Repositories\contract\FilmRepositoryInterface;
 class FilmRepository implements FilmRepositoryInterface
 {
 
-    public function getall() {
-        return Film::with('session')->get();
+    public function getAll()
+    {
+        return Film::all();
     }
 
-    public function store(array $data) : Film {
-        return Auth::user()->films()->create($data);
+    public function store(array $data)
+    {
+        return Film::create($data);
     }
 
-    public function update(array $data, int $id) : int {
+    public function update(array $data, int $id)
+    {
         $film = Film::findOrFail($id);
-
-        return $film->update($data);
+        $film->update($data);
+        return $film;
     }
 
-    public function destroy(int $id) : int {
+    public function destroy(int $id)
+    {
         $film = Film::findOrFail($id);
-
-        return $film->delete();
+        $film->delete();
     }
-
 }

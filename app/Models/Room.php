@@ -8,5 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     use HasFactory;
-    protected $fillable = ['type'];
+    protected $fillable = [
+        'type',   
+        'capacity', 
+        'location', 
+    ];
+
+    public function sessions()
+    {
+        return $this->hasMany(Session::class);
+    }
 }

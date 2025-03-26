@@ -23,7 +23,7 @@ class RoomRepository implements RoomRepositoryInterface
         return $room->update($data);
     }
 
-    public function delete(int $id): bool
+    public function destroy(int $id): bool
     {
         $room = Room::findOrFail($id);
         return $room->delete();
