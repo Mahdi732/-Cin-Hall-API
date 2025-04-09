@@ -9,7 +9,7 @@ class Film extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'image', 'duration', 'minimum_age', 'trailer_url', 'genre'];
+    protected $fillable = ['title', 'description', 'image', 'duration', 'minimum_age', 'genre'];
 
     public function user(){
         return $this->belongsTo(User::class);
